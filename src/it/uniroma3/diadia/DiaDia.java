@@ -4,6 +4,8 @@ package it.uniroma3.diadia ;
 
 import it.uniroma3.diadia.ambienti.Stanza;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
+import it.uniroma3.diadia.comando.FabbricaDiComandi;
+import it.uniroma3.diadia.comando.FabbricaDiComandiFisarmonica;
 
 
 /**
@@ -57,9 +59,11 @@ public class DiaDia {
 	 * @return true se l'istruzione e' eseguita e il gioco continua, false altrimenti
 	 */
 	private boolean processaIstruzione(String istruzione) {
-		Comando comandoDaEseguire = new Comando(istruzione);
+		Comando comandoDaEseguire ;
+		FabbricaDiComandi factory = new FabbricaDiComandiFisarmonica() ;
+		comandoDaEseguire = factory.costruisciComando(istruzione ,this.io);
+		comandoDaEseguire.esegui(this.partita) ;
 
-		final String nome = comandoDaEseguire.getNome();
 		if(nome == null) {
 			io.mostraMessaggio("Devi digitare un comando") ;
 			return false ;
@@ -98,16 +102,6 @@ public class DiaDia {
 		this.partita.getGiocatore().getBorsa().addAttrezzo(attrezzo) ;
 		this.partita.getStanzaCorrente().removeAttrezzo(attrezzo) ; 
 		io.mostraMessaggio("Attrezzo "+ nomeAttrezzo +" preso!") ;
-	}
-
-	private void posa(String nomeAttrezzo) {
-		if(!this.partita.getGiocatore().getBorsa().hasAttrezzo(nomeAttrezzo)) {
-			io.mostraMessaggio("Attrezzo "+ nomeAttrezzo +" non presente nella borsa") ;
-			return ; //perche non vado avanti
-		}
-		Attrezzo attrezzo = this.partita.getGiocatore().getBorsa().removeAttrezzo(nomeAttrezzo) ;
-		this.partita.getStanzaCorrente().addAttrezzo(attrezzo) ;
-		io.mostraMessaggio("Attrezzo "+ nomeAttrezzo +" Posato!") ;
 	}
 
 
